@@ -69,7 +69,7 @@ def post_to_bluesky():
             return
 
         # Prepare the post text
-        post_text = "#hrvatibezkonteksta"
+        post_text = "#hourlyhibiki"
         hashtag_length = len(post_text)
 
         # Create a hashtag facet
@@ -82,7 +82,7 @@ def post_to_bluesky():
                 "features": [
                     {
                         "$type": "app.bsky.richtext.facet#tag",
-                        "tag": "hrvatibezkonteksta"
+                        "tag": "hourlyhibiki"
                     }
                 ]
             }
@@ -94,7 +94,7 @@ def post_to_bluesky():
 
         # Upload the image
         upload = client.upload_blob(image_data)
-        images = [models.AppBskyEmbedImages.Image(alt="@utjecajnik best of", image=upload.blob)]
+        images = [models.AppBskyEmbedImages.Image(alt="hourly hibiki", image=upload.blob)]
         embed = models.AppBskyEmbedImages.Main(images=images)
 
         # Create the post with rich text facets
