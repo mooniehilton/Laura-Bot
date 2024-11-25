@@ -19,7 +19,8 @@ LOG_FILE = "posted_images.log"  # Log file to track posted images
 
 def get_next_image(directory="images/"):
     """Retrieve the next unposted image to post based on numerical order."""
-    images = sorted(glob.glob(f"{directory}/*.jpg"))
+    images = glob.glob({directory} + "*")
+    image_open = images[random.randint(0,len(images))-1]
     if not images:
         print("No images found in the directory.")
         return None
