@@ -1,1 +1,1 @@
-Nothing special about this bot. It posts a new image on Bluesky twice a day. Feel free to use it. Don't abuse my image repo :)
+Posts a random image of Shikyouin Hibiki (hopefully) every hour.
