@@ -72,7 +72,7 @@ def post_to_bluesky():
             return
 
         # Prepare the post text
-        post_text = "#hourlyhibiki"
+        post_text = ""
         hashtag_length = len(post_text)
 
         # Create a hashtag facet
