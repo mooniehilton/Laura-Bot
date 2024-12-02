@@ -69,7 +69,7 @@ def post_to_bluesky():
             return
 
         # Prepare the post text
-        post_text = "#hrvatibezkonteksta"
+        post_text = ""
         hashtag_length = len(post_text)
 
         # Create a hashtag facet
