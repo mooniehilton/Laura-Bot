@@ -1,7 +1,7 @@
 import os
 import glob
-import subprocess
 import random
+from PIL import Image
 from atproto import Client, models
 from dotenv import load_dotenv
 from datetime import datetime
@@ -17,12 +17,10 @@ BLUESKY_PASSWORD = os.getenv("BLUESKY_PASSWORD")
 client = Client()
 
 LOG_FILE = "posted_images.log"  # Log file to track posted images
-
 def get_next_image(directory="images/"):
     """Retrieve the next unposted image to post based on numerical order."""
     images = glob.glob(directory + "*")
-    image_open = images[random.randint(0,len(images))-1]
-    image_size = os.path.getsize(image_open)
+    random.shuffle(images)  # Shuffle the images for randomness
     if not images:
         print("No images found in the directory.")
         return None
@@ -53,6 +51,46 @@ def is_image_posted(image_path):
         return image_path in logged_images
     except FileNotFoundError:
         return False
+
+def compress_image(image_path):
+    """use PIL to compress the image if it would be above the upload size limit"""
+    size_limit = 976560  # 976.56 KB
+    
+    # Check the size of the image
+    image_size = os.path.getsize(image_path)
+    if image_size <= size_limit:
+        # Image is within the size limit - all good!
+        return image_path
+    
+    # Compress the image to .jpg format
+    print(f"Compressing image: {image_path}")
+    compressed_image_path = image_path + "_compressed.jpg"
+    image = Image.open(image_path)
+    rgb_image = image.convert("RGB")
+    rgb_image.save(compressed_image_path, "JPEG", quality=85, optimize=True)
+    
+    # Check the size of the compressed image
+    image_size = os.path.getsize(compressed_image_path)
+    if image_size <= size_limit:
+        # Compressed image is within the size limit
+        return compressed_image_path
+    
+    # Resize the image if it is still above the size limit
+    print(f"Resizing image: {image_path}")
+    size_ratio = size_limit / image_size * 0.9  # 90% of the size limit as a buffer
+    resized_image_path = image_path + "_resized.jpg"
+    resized_image = rgb_image.resize((int(image.width * size_ratio), int(image.height * size_ratio)))
+    resized_image.save(resized_image_path, "JPEG", quality=85, optimize=True)
+    return resized_image_path
+
+def delete_image_copies(image_path):
+    """Delete the compressed and resized copies of the image, if present."""
+    compressed_image_path = image_path + "_compressed.jpg"
+    resized_image_path = image_path + "_resized.jpg"
+    for file_path in [compressed_image_path, resized_image_path]:
+        if os.path.exists(file_path):
+            os.remove(file_path)
+            print(f"Deleted: {file_path}")
 
 def post_to_bluesky():
     """Logs in and posts an image with text to Bluesky."""
