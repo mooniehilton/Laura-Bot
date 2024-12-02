@@ -61,4 +61,4 @@ jobs:
           git commit -m "Update posted images log"
           
           # Push the commit to GitHub using the GitHub token for authentication
-          git push https://github-actions[bot]:${{ secrets.GH_TOKEN }}@github.com/curephoenix/hourlyhibiki-py.git HEAD:main || echo "No changes to push"
+          git push https://github-actions[bot]:${{ secrets.GH_TOKEN }}@github.com/mooniehilton/laura-bot-py.git HEAD:main || echo "No changes to push"
